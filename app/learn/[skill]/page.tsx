@@ -1,8 +1,9 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { CheckCircle2, ChevronRight, PlayCircle, Sparkles } from 'lucide-react'
+import { CheckCircle2, ChevronRight, Compass, PlayCircle, Sparkles } from 'lucide-react'
 
 type Video = {
   id: string;
@@ -58,7 +59,47 @@ export default function LearnSkillPage() {
     )
   }
 
-  let isFirstVideo = true;
+  const hasAnyVideos = Boolean(data && data.totalVideos > 0)
+
+  if (!hasAnyVideos) {
+    return (
+      <div className="max-w-3xl mx-auto py-10">
+        <div className="inline-flex items-center px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-semibold mb-4">
+          <Sparkles className="w-4 h-4 mr-2" />
+          AI-Generated Learning Path
+        </div>
+
+        <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 p-8 md:p-10 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 flex items-center justify-center mb-5">
+            <Compass className="w-7 h-7" />
+          </div>
+
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3">
+            No learning modules yet for {skill}
+          </h1>
+
+          <p className="text-slate-600 dark:text-slate-400 text-base md:text-lg mb-7 max-w-2xl">
+            This path is ready to generate as soon as videos are added. Ask an instructor to publish modules for this skill, then come back to get your structured Foundations to Practical Application journey.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold hover:opacity-90 transition"
+            >
+              Explore other skills
+            </Link>
+            <Link
+              href="/instructor"
+              className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            >
+              Go to instructor dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto pb-20">
@@ -95,8 +136,7 @@ export default function LearnSkillPage() {
 
               <div className="space-y-6 md:ml-14">
                 {stageItem.videos.map((video) => {
-                  const showStartHere = isFirstVideo;
-                  isFirstVideo = false;
+                  const showStartHere = stageItem.stage === '1. Foundations' && stageItem.videos[0]?.id === video.id
 
                   return (
                     <div key={video.id} className="relative group bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">

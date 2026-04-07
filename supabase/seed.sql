@@ -21,6 +21,12 @@
 -- Optional: If you want to allow anonymous read access while RLS is enabled:
 CREATE POLICY "Enable read access for all users" ON "public"."videos" AS PERMISSIVE FOR SELECT TO public USING (true);
 CREATE POLICY "Enable read access for all users" ON "public"."profiles" AS PERMISSIVE FOR SELECT TO public USING (true);
+CREATE POLICY "Allow authenticated users to insert own videos"
+ON "public"."videos"
+AS PERMISSIVE
+FOR INSERT
+TO authenticated
+WITH CHECK (instructor_id = auth.uid());
 
 -- Seed Data for Videos
 INSERT INTO videos (title, youtube_url, skill_category, difficulty_level, tags, recommended_order) VALUES
