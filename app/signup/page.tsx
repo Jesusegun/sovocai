@@ -22,6 +22,15 @@ export default function SignupPage() {
     setError(null)
     setSuccess(null)
     const formData = new FormData(e.currentTarget)
+    const password = String(formData.get('password') ?? '')
+    const confirmPassword = String(formData.get('confirm_password') ?? '')
+
+    if (password !== confirmPassword) {
+      setError('Password and confirm password must match.')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await signup(formData)
       if (!res.success) {
@@ -86,6 +95,16 @@ export default function SignupPage() {
             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
             <input
               name="password"
+              type="password"
+              required
+              className="w-full px-3 py-2.5 border rounded-xl dark:bg-slate-950 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Retype Password</label>
+            <input
+              name="confirm_password"
               type="password"
               required
               className="w-full px-3 py-2.5 border rounded-xl dark:bg-slate-950 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"

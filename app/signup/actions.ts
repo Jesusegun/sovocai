@@ -15,12 +15,17 @@ export async function signup(formData: FormData) {
 
   const email = String(formData.get('email') ?? '').trim()
   const password = String(formData.get('password') ?? '').trim()
+  const confirmPassword = String(formData.get('confirm_password') ?? '').trim()
   const fullName = String(formData.get('full_name') ?? '').trim()
   const role = String(formData.get('role') ?? '').trim().toLowerCase()
   const next = getSafeNextPath(String(formData.get('next') ?? '/'))
 
-  if (!email || !password || !fullName) {
-    return { success: false, message: 'Full name, email, and password are required.' }
+  if (!email || !password || !confirmPassword || !fullName) {
+    return { success: false, message: 'Full name, email, password, and confirm password are required.' }
+  }
+
+  if (password !== confirmPassword) {
+    return { success: false, message: 'Password and confirm password must match.' }
   }
 
   if (role !== 'user' && role !== 'instructor') {
