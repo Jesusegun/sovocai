@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Session } from '@supabase/supabase-js';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from 'next/link';
@@ -17,13 +18,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  
+  let session: Session | null = null;
   let role = 'user';
-  if (session?.user) {
-    const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-    if (data) role = data.role;
+
+  try {
+    const supabase = await createClient();
+    const { data: sessionData } = await supabase.auth.getSession();
+    session = sessionData.session;
+
+    if (session?.user) {
+      const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+      if (data) role = data.role;
+    }
+  } catch (error) {
+    console.error('Supabase initialization failed in root layout:', error);
   }
 
   return (
