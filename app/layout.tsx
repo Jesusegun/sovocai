@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: "Deterministic AI-like learning paths for skilled trades.",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function RootLayout({
   children,
 }: Readonly<{
