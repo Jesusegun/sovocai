@@ -4,6 +4,13 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 
+function getSafeNextPath(input: string): string {
+  if (!input || !input.startsWith('/')) return '/'
+  if (input.startsWith('//')) return '/'
+  if (input.includes('\\')) return '/'
+  return input
+}
+
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
@@ -12,6 +19,7 @@ export async function login(formData: FormData) {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   }
+  const next = getSafeNextPath(String(formData.get('next') ?? '/'))
 
   const { error } = await supabase.auth.signInWithPassword(data)
 
@@ -20,5 +28,5 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/')
+  redirect(next)
 }

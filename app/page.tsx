@@ -34,7 +34,7 @@ export default function Home() {
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">AI-Curated Pathways</span>
         </h1>
         <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-          Select a trade below. Our deterministic engine instantly orchestrates YouTube videos into a structured, progressive learning journey.
+          Select a trade below to start your structured, progressive learning journey.
         </p>
       </div>
 

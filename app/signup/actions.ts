@@ -3,6 +3,13 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 
+function getSafeNextPath(input: string): string {
+  if (!input || !input.startsWith('/')) return '/'
+  if (input.startsWith('//')) return '/'
+  if (input.includes('\\')) return '/'
+  return input
+}
+
 export async function signup(formData: FormData) {
   const supabase = await createClient()
 
@@ -10,6 +17,7 @@ export async function signup(formData: FormData) {
   const password = String(formData.get('password') ?? '').trim()
   const fullName = String(formData.get('full_name') ?? '').trim()
   const role = String(formData.get('role') ?? '').trim().toLowerCase()
+  const next = getSafeNextPath(String(formData.get('next') ?? '/'))
 
   if (!email || !password || !fullName) {
     return { success: false, message: 'Full name, email, and password are required.' }
@@ -66,7 +74,7 @@ export async function signup(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    return { success: true, redirectTo: '/' }
+    return { success: true, redirectTo: next }
   }
 
   // Email confirmation flow: auth user exists, trigger should create profile.
