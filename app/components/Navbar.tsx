@@ -45,7 +45,7 @@ export function Navbar({ isAuthenticated, role, fullName }: NavbarProps) {
   } else {
     navLinks.push({ href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> })
     if (role === 'user') {
-      navLinks.push({ href: '/', label: 'Skills', icon: <BookOpen className="w-4 h-4" /> })
+      // Intentionally left blank: Learners use the Dashboard entirely to manage skills in the MVP
     }
     if (role === 'instructor') {
       navLinks.push({ href: '/instructor', label: 'Manage Videos', icon: <Upload className="w-4 h-4" /> })

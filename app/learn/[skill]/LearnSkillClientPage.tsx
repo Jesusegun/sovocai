@@ -100,9 +100,14 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
           next.set(videoId, !currentStatus)
           return next
         })
+      } else {
+        const errData = await res.json()
+        alert(`Failed to save progress: ${errData.error || 'Unknown error'}`)
+        console.error('Progress API error:', errData)
       }
     } catch (err) {
       console.error('Failed to toggle progress:', err)
+      alert(`Network error saving progress: ${(err as Error).message}`)
     } finally {
       setTogglingId(null)
     }
