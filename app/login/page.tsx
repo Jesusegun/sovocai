@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
-  const next = searchParams.get('next') || '/'
+  const next = searchParams.get('next') || '/dashboard'
   const status = searchParams.get('status')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

@@ -14,7 +14,7 @@ export default function SignupPage() {
   const [role, setRole] = useState<'user' | 'instructor'>('user')
   const router = useRouter()
   const searchParams = useSearchParams()
-  const next = searchParams.get('next') || '/'
+  const next = searchParams.get('next') || '/dashboard'
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

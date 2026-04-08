@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   const code = requestUrl.searchParams.get('code')
   const tokenHash = requestUrl.searchParams.get('token_hash')
   const type = requestUrl.searchParams.get('type') as EmailOtpType | null
-  const next = getSafeNextPath(requestUrl.searchParams.get('next') ?? '/')
+  const next = getSafeNextPath(requestUrl.searchParams.get('next') ?? '/dashboard')
   const supabase = await createClient()
 
   if (code) {
