@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
   const next = searchParams.get('next') || '/'
+  const status = searchParams.get('status')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -42,6 +43,11 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="hidden" name="next" value={next} />
+          {status === 'password-reset' && (
+            <div className="p-3 text-sm text-green-700 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-900/40">
+              Password reset successful. Please sign in with your new password.
+            </div>
+          )}
           {error && <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-900/40">{error}</div>}
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
@@ -66,6 +72,11 @@ export default function LoginPage() {
                 className="w-full pl-10 pr-3 py-2.5 border rounded-xl dark:bg-slate-950 dark:border-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
+          <div className="text-right text-sm">
+            <Link href="/forgot-password" className="text-blue-600 hover:text-blue-700 font-semibold">
+              Forgot password?
+            </Link>
           </div>
           <button
             type="submit"
