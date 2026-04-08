@@ -58,9 +58,47 @@ const SKILL_CONFIG: Record<string, { icon: React.ReactNode; gradient: string }> 
  *
  * @param fullName - User's display name
  */
+import { useRouter } from 'next/navigation'
+
 export function LearnerDashboard({ fullName }: LearnerDashboardProps) {
   const [progress, setProgress] = useState<ProgressEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [startingSkill, setStartingSkill] = useState<string | null>(null)
+  const router = useRouter()
+
+  const handleStartSkill = async (skill: string) => {
+    setStartingSkill(skill)
+    try {
+      // Fetch the learning path so we can find the first video ID
+      const pathRes = await fetch(`/api/learning-path?skill=${encodeURIComponent(skill)}`)
+      const pathData = await pathRes.json()
+
+      if (pathData && pathData.stages && pathData.stages.length > 0) {
+        // Find the first available video across all stages
+        let firstVideoId = null
+        for (const stage of pathData.stages) {
+          if (stage.videos.length > 0) {
+            firstVideoId = stage.videos[0].id
+            break
+          }
+        }
+
+        // If a video exists, create a progress entry showing they've "started" the skill implicitly
+        if (firstVideoId) {
+          await fetch('/api/progress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ video_id: firstVideoId, completed: false }),
+          })
+        }
+      }
+    } catch (err) {
+      console.error('Error starting skill path:', err)
+    } finally {
+      // Always route to the learn page regardless of backend seeding success
+      router.push(`/learn/${encodeURIComponent(skill)}`)
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController()
@@ -206,17 +244,32 @@ export function LearnerDashboard({ fullName }: LearnerDashboardProps) {
                 {recommendedSkills.map((skill) => {
                   const config = SKILL_CONFIG[skill] ?? { icon: <BookOpen className="w-5 h-5" />, gradient: 'from-slate-500 to-slate-400' }
                   return (
-                    <Link key={skill} href={`/learn/${encodeURIComponent(skill)}`} className="group">
-                      <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-4">
+                    <div key={skill} className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between group h-full">
+                      <div className="flex items-center gap-4 mb-4">
                         <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center text-white flex-shrink-0`}>
                           {config.icon}
                         </div>
                         <div>
-                          <p className="font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{skill}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">Start your learning path</p>
+                          <p className="font-semibold text-slate-900 dark:text-white">{skill}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">Curated modules</p>
                         </div>
                       </div>
-                    </Link>
+                      
+                      <button
+                        onClick={() => handleStartSkill(skill)}
+                        disabled={startingSkill === skill}
+                        className="w-full inline-flex items-center justify-center py-2 px-4 bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold text-sm rounded-xl transition-colors disabled:opacity-50"
+                      >
+                        {startingSkill === skill ? (
+                          <span className="flex items-center gap-2">
+                            <div className="w-3.5 h-3.5 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
+                            Starting...
+                          </span>
+                        ) : (
+                          'Start Path'
+                        )}
+                      </button>
+                    </div>
                   )
                 })}
               </div>

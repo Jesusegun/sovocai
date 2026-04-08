@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState, useCallback } from 'react'
 import {
+  ArrowLeft,
   CheckCircle2,
   ChevronRight,
   Circle,
@@ -173,9 +174,18 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
     <div className="container mx-auto px-4 py-8 max-w-4xl pb-20">
       {/* Header */}
       <div className="mb-10 animate-fade-in">
-        <div className="inline-flex items-center px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-semibold mb-4">
-          <Sparkles className="w-4 h-4 mr-2" />
-          AI-Generated Learning Path
+        <Link 
+          href="/dashboard"
+          className="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1.5" />
+          Back to Dashboard
+        </Link>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="inline-flex items-center px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-semibold">
+            <Sparkles className="w-4 h-4 mr-2" />
+            AI-Generated Learning Path
+          </div>
         </div>
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">Master {skill}</h1>
         <p className="text-lg text-slate-600 dark:text-slate-400">

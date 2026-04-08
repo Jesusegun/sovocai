@@ -63,7 +63,7 @@ export function Navbar({ isAuthenticated, role, fullName }: NavbarProps) {
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+        <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-2 flex-shrink-0">
           <div className="bg-blue-600 text-white rounded-lg p-1.5 px-3 font-bold text-xl tracking-tighter">
             Sovo<span className="text-blue-200">cai</span>
           </div>
