@@ -3,22 +3,26 @@
 import { useEffect, useState } from 'react'
 import { Activity, Clock, Users, Video } from 'lucide-react'
 
+type AdminStats = {
+  totalUsers: number
+  totalVideos: number
+}
+
 type RecentVideo = {
   id: string
   title: string
   skill_category: string
   difficulty_level: number
   created_at: string
-  instructor: { full_name: string | null } | { full_name: string | null }[] | null
+  instructor: { full_name: string | null } | null
 }
 
 /**
- * Admin page.
- * Displays platform statistics (total users, total videos)
- * and a list of recently uploaded videos.
+ * Admin dashboard component.
+ * Shows: platform stats (users, videos) and recent video uploads.
  */
-export default function AdminPage() {
-  const [stats, setStats] = useState({ totalUsers: 0, totalVideos: 0 })
+export function AdminDashboard() {
+  const [stats, setStats] = useState<AdminStats>({ totalUsers: 0, totalVideos: 0 })
   const [recentVideos, setRecentVideos] = useState<RecentVideo[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -38,9 +42,9 @@ export default function AdminPage() {
         setStats(overview)
 
         if (Array.isArray(videos)) {
+          // Sort by created_at desc, take last 10
           const sorted = [...videos].sort(
-            (a: RecentVideo, b: RecentVideo) =>
-              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            (a: RecentVideo, b: RecentVideo) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           )
           setRecentVideos(sorted.slice(0, 10))
         }
@@ -55,15 +59,6 @@ export default function AdminPage() {
     return () => controller.abort()
   }, [])
 
-  /**
-   * Normalize instructor shape — Supabase may return an object or array.
-   */
-  const getInstructorName = (instructor: RecentVideo['instructor']): string | null => {
-    if (!instructor) return null
-    if (Array.isArray(instructor)) return instructor[0]?.full_name ?? null
-    return instructor.full_name ?? null
-  }
-
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -77,14 +72,16 @@ export default function AdminPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       {/* Header */}
-      <div className="flex items-center mb-10 animate-fade-in">
-        <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-900 dark:from-slate-600 dark:to-slate-800 text-white rounded-xl flex items-center justify-center mr-4 shadow-lg">
-          <Activity className="w-6 h-6" />
+      <div className="mb-10 animate-fade-in">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-slate-800 dark:bg-slate-700 text-white flex items-center justify-center">
+            <Activity className="w-5 h-5" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Platform Overview</h1>
         </div>
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Platform Overview</h1>
-          <p className="text-slate-500 dark:text-slate-400">Live system statistics and monitoring.</p>
-        </div>
+        <p className="text-slate-600 dark:text-slate-400 text-lg">
+          Live system statistics and recent content activity.
+        </p>
       </div>
 
       {loading ? (
@@ -104,7 +101,6 @@ export default function AdminPage() {
               <div className="text-4xl font-extrabold mb-1">{stats.totalUsers}</div>
               <div className="text-sm font-medium text-slate-500 uppercase tracking-wider">Registered Users</div>
             </div>
-
             <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl p-8 flex flex-col justify-center items-center shadow-sm hover:shadow-md transition-shadow">
               <Video className="w-10 h-10 text-indigo-500 mb-4" />
               <div className="text-4xl font-extrabold mb-1">{stats.totalVideos}</div>
@@ -118,7 +114,6 @@ export default function AdminPage() {
               <Clock className="w-5 h-5 text-slate-400" />
               <h2 className="text-xl font-bold">Recent Uploads</h2>
             </div>
-
             {recentVideos.length === 0 ? (
               <div className="text-center py-12 bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl">
                 <Video className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
@@ -127,12 +122,11 @@ export default function AdminPage() {
             ) : (
               <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
                 {recentVideos.map((video) => {
-                  const instructorName = getInstructorName(video.instructor)
+                  const instructorName = Array.isArray(video.instructor)
+                    ? ((video.instructor as Array<{ full_name: string | null }>)[0]?.full_name ?? null)
+                    : video.instructor?.full_name ?? null
                   return (
-                    <div
-                      key={video.id}
-                      className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                    >
+                    <div key={video.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 flex-shrink-0">
                         <Video className="w-5 h-5" />
                       </div>

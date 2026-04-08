@@ -1,4 +1,8 @@
--- Create profiles table
+-- ============================================================
+-- Sovocai MVP Database Schema
+-- ============================================================
+
+-- Profiles (extends auth.users)
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name TEXT,
@@ -6,10 +10,9 @@ CREATE TABLE profiles (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable Row Level Security (RLS) - we bypass RLS in the server code, but it's good practice to enable it
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
--- Create videos table
+-- Videos (core content engine)
 CREATE TABLE videos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -22,10 +25,24 @@ CREATE TABLE videos (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable Row Level Security (RLS)
 ALTER TABLE videos ENABLE ROW LEVEL SECURITY;
 
--- Create a trigger to automatically create a profile for every new user
+-- User Progress (tracks video completion and watch history)
+CREATE TABLE user_progress (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  video_id UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
+  completed BOOLEAN DEFAULT FALSE,
+  last_watched_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE (user_id, video_id)
+);
+
+ALTER TABLE user_progress ENABLE ROW LEVEL SECURITY;
+
+-- ============================================================
+-- Trigger: Auto-create profile on auth.users insert
+-- ============================================================
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
@@ -39,7 +56,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger the function every time a user is created
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();

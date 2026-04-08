@@ -9,6 +9,9 @@ const GENERIC_RECOVERY_MESSAGE =
 const RECOVERY_SYSTEM_ERROR_MESSAGE =
   'We could not send a recovery email right now. Please try again in a moment or contact support.'
 
+const RECOVERY_RATE_LIMIT_MESSAGE =
+  'Too many recovery email requests. Please wait a bit before trying again.'
+
 function isSystemDeliveryError(message: string): boolean {
   const normalized = message.toLowerCase()
 
@@ -18,6 +21,15 @@ function isSystemDeliveryError(message: string): boolean {
     normalized.includes('redirect url') ||
     normalized.includes('smtp') ||
     normalized.includes('email provider') ||
+    normalized.includes('rate limit') ||
+    normalized.includes('over_email_send_rate_limit')
+  )
+}
+
+function isRateLimitError(message: string, status?: number): boolean {
+  const normalized = message.toLowerCase()
+  return (
+    status === 429 ||
     normalized.includes('rate limit') ||
     normalized.includes('over_email_send_rate_limit')
   )
@@ -69,6 +81,10 @@ export async function requestPasswordReset(formData: FormData) {
       message: error.message,
       redirectTo,
     })
+
+    if (isRateLimitError(error.message, error.status)) {
+      return { success: false, message: RECOVERY_RATE_LIMIT_MESSAGE }
+    }
 
     // For system-level failures, return a real error so users can retry or report it.
     if (isSystemDeliveryError(error.message)) {

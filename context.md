@@ -511,6 +511,6 @@ You are a senior full-stack engineer. Build a complete, working MVP web applicat
 •	5. Experience a polished, believable product
 •	
 •	The app must run locally and be deployable to Vercel.
-•	.aQ*De!v462jk_y
+
 •	Build the full codebase accordingly.
 
