@@ -9,8 +9,8 @@ import { Navbar } from './components/Navbar';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sovocai — AI-Powered Vocational Learning Paths",
-  description: "Master skilled trades with structured, AI-curated learning paths. Plumbing, Solar Installation, Electrical Wiring and more.",
+  title: "Sovocai — Curated Vocational Learning Paths",
+  description: "Master skilled trades with structured, expert-curated learning paths. Plumbing, Solar Installation, Electrical Wiring and more.",
 };
 
 export const dynamic = 'force-dynamic';
@@ -68,7 +68,7 @@ export default async function RootLayout({
               <span className="text-xs text-slate-500 dark:text-slate-400">© {new Date().getFullYear()}</span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              AI-curated vocational learning paths. Built for the future of skilled trades.
+              Expert-curated vocational learning paths. Built for the future of skilled trades.
             </p>
           </div>
         </footer>

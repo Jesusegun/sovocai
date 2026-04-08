@@ -102,7 +102,7 @@ export default function Home() {
         <div className="relative container mx-auto px-4 py-20 md:py-32 flex flex-col items-center text-center max-w-4xl">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full text-xs font-semibold uppercase tracking-wider mb-8 animate-fade-in">
             <Sparkles className="w-3.5 h-3.5" />
-            AI-Curated Learning Paths
+            Expert-Curated Learning Paths
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight animate-fade-in-up">

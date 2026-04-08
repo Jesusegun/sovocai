@@ -60,7 +60,8 @@ export default function InstructorPage() {
     setError('')
     setSuccess(false)
 
-    const formData = new FormData(e.currentTarget)
+    const form = e.currentTarget
+    const formData = new FormData(form)
 
     const tagsString = formData.get('tags') as string
     const tags = tagsString
@@ -91,7 +92,7 @@ export default function InstructorPage() {
       const newVideo = await res.json()
       setSuccess(true)
       setVideos((prev) => [newVideo, ...prev])
-      e.currentTarget.reset()
+      form.reset()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to upload video')
     } finally {

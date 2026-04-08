@@ -118,7 +118,7 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4" />
-          <p className="text-slate-500 animate-pulse">Generating your personalized AI learning path...</p>
+          <p className="text-slate-500 animate-pulse">Organizing your curated learning path...</p>
         </div>
       </div>
     )
@@ -189,7 +189,7 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
         <div className="flex items-center gap-3 mb-4">
           <div className="inline-flex items-center px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-semibold">
             <Sparkles className="w-4 h-4 mr-2" />
-            AI-Generated Learning Path
+            Smart Learning Path
           </div>
         </div>
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">Master {skill}</h1>
