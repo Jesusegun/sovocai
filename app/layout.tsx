@@ -9,7 +9,7 @@ import { Navbar } from './components/Navbar';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Sovocai — Curated Vocational Learning Paths",
+  title: "Sovocai | Curated Vocational Learning Paths",
   description: "Master skilled trades with structured, expert-curated learning paths. Plumbing, Solar Installation, Electrical Wiring and more.",
 };
 

@@ -179,7 +179,7 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
     <div className="container mx-auto px-4 py-8 max-w-4xl pb-20">
       {/* Header */}
       <div className="mb-10 animate-fade-in">
-        <Link 
+        <Link
           href="/dashboard"
           className="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors mb-6"
         >
@@ -259,11 +259,10 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
                   return (
                     <div
                       key={video.id}
-                      className={`relative group bg-white dark:bg-slate-900 border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all ${
-                        isCompleted
+                      className={`relative group bg-white dark:bg-slate-900 border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all ${isCompleted
                           ? 'border-emerald-200 dark:border-emerald-900/40'
                           : 'dark:border-slate-800'
-                      }`}
+                        }`}
                     >
                       {/* Start Here badge */}
                       {showStartHere && (
@@ -318,11 +317,10 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
                               type="button"
                               disabled={isToggling}
                               onClick={() => toggleComplete(video.id)}
-                              className={`flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                                isCompleted
+                              className={`flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-lg transition-all ${isCompleted
                                   ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/30'
                                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-100 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400'
-                              } disabled:opacity-50`}
+                                } disabled:opacity-50`}
                             >
                               {isToggling ? (
                                 <div className="w-4 h-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

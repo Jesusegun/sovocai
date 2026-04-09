@@ -184,9 +184,9 @@ export default function InstructorPage() {
                 name="difficulty_level"
                 className="w-full px-3 py-2.5 border rounded-xl dark:bg-slate-950 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               >
-                <option value="1">1 — Foundations</option>
-                <option value="2">2 — Core Skills</option>
-                <option value="3">3 — Practical Application</option>
+                <option value="1">1 - Foundations</option>
+                <option value="2">2 - Core Skills</option>
+                <option value="3">3 - Practical Application</option>
               </select>
             </div>
           </div>

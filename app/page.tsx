@@ -108,12 +108,12 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight animate-fade-in-up">
             Master any trade with{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500">
-              intelligent pathways
+              AI-powered pathways
             </span>
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl animate-fade-in-up stagger-2">
-            Select a skill below and start your structured, progressive learning journey — from foundations to practical mastery.
+            Select a skill below and start your AI-structured, progressive learning journey from foundations to practical mastery.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 animate-fade-in-up stagger-3">
@@ -222,7 +222,7 @@ export default function Home() {
             Ready to build real-world skills?
           </h2>
           <p className="mt-4 text-blue-100 text-lg relative z-10 max-w-lg mx-auto">
-            Join Sovocai today and follow a structured path from beginner to practitioner — for free.
+            Join Sovocai today and follow a structured path from beginner to practitioner for free.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center relative z-10">
             <Link
