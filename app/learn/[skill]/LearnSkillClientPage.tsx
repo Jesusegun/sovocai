@@ -11,6 +11,7 @@ import {
   PlayCircle,
   Sparkles,
 } from 'lucide-react'
+import { STAGE_BY_DIFFICULTY } from '@/utils/learning-constants'
 
 type Video = {
   id: string
@@ -46,12 +47,14 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
   const [data, setData] = useState<{ stages: Stage[]; totalVideos: number } | null>(null)
   const [progress, setProgress] = useState<Map<string, boolean>>(new Map())
   const [error, setError] = useState('')
+  const [progressError, setProgressError] = useState('')
   const [loading, setLoading] = useState(true)
   const [togglingId, setTogglingId] = useState<string | null>(null)
 
   // Fetch learning path and progress in parallel
   useEffect(() => {
     const controller = new AbortController()
+    setProgressError('')
 
     Promise.all([
       fetch(`/api/learning-path?skill=${encodeURIComponent(skill)}`, { signal: controller.signal }).then((r) => r.json()),
@@ -85,6 +88,7 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
    */
   const toggleComplete = useCallback(async (videoId: string) => {
     setTogglingId(videoId)
+    setProgressError('')
     const currentStatus = progress.get(videoId) ?? false
 
     try {
@@ -102,12 +106,12 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
         })
       } else {
         const errData = await res.json()
-        alert(`Failed to save progress: ${errData.error || 'Unknown error'}`)
+        setProgressError(`Failed to save progress: ${errData.error || 'Unknown error'}`)
         console.error('Progress API error:', errData)
       }
     } catch (err) {
       console.error('Failed to toggle progress:', err)
-      alert(`Network error saving progress: ${(err as Error).message}`)
+      setProgressError(`Network error saving progress: ${(err as Error).message}`)
     } finally {
       setTogglingId(null)
     }
@@ -197,6 +201,12 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
           We&apos;ve analyzed and structured {data?.totalVideos ?? 0} top resources into a step-by-step curriculum perfectly calibrated for your success.
         </p>
 
+        {progressError && (
+          <div className="mt-4 rounded-xl border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/10 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
+            {progressError}
+          </div>
+        )}
+
         {/* Overall Progress */}
         <div className="mt-6 flex items-center gap-4">
           <div className="flex-1 progress-bar-track bg-slate-200 dark:bg-slate-800">
@@ -252,7 +262,7 @@ export default function LearnSkillClientPage({ skill }: LearnSkillClientPageProp
               <div className="space-y-6 md:ml-14">
                 {stageItem.videos.map((video) => {
                   const showStartHere =
-                    stageItem.stage === '1. Foundations' && stageItem.videos[0]?.id === video.id
+                    stageItem.stage === STAGE_BY_DIFFICULTY[1] && stageItem.videos[0]?.id === video.id
                   const isCompleted = progress.get(video.id) ?? false
                   const isToggling = togglingId === video.id
 

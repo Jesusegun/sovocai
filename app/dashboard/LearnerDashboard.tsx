@@ -16,6 +16,7 @@ import {
   Sun,
   Zap,
 } from 'lucide-react'
+import { SKILL_NAMES, type SkillName } from '@/utils/learning-constants'
 
 type VideoData = {
   id: string
@@ -42,7 +43,7 @@ type LearnerDashboardProps = {
   fullName: string
 }
 
-const SKILL_CONFIG: Record<string, { icon: React.ReactNode; gradient: string }> = {
+const SKILL_CONFIG: Record<SkillName, { icon: React.ReactNode; gradient: string }> = {
   Plumbing: { icon: <Wrench className="w-5 h-5" />, gradient: 'from-blue-500 to-cyan-400' },
   'Solar Installation': { icon: <Sun className="w-5 h-5" />, gradient: 'from-amber-500 to-orange-400' },
   'Electrical Wiring': { icon: <Zap className="w-5 h-5" />, gradient: 'from-indigo-500 to-purple-400' },
@@ -130,8 +131,7 @@ export function LearnerDashboard({ fullName }: LearnerDashboardProps) {
   )
 
   // Recommended skills = those the user hasn't started
-  const allSkills = ['Plumbing', 'Solar Installation', 'Electrical Wiring', 'Construction', 'Automotive Repair', 'Tailoring']
-  const recommendedSkills = allSkills.filter((s) => !activeSkills.has(s))
+  const recommendedSkills = SKILL_NAMES.filter((s) => !activeSkills.has(s))
 
   // Recent activity: last 5
   const recentActivity = progress.slice(0, 5)

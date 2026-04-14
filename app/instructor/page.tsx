@@ -1,24 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Clock, PlusCircle, Tag, Video } from 'lucide-react'
+import { PlusCircle, Video } from 'lucide-react'
+import {
+  DIFFICULTY_LEVELS,
+  getDifficultyLabel,
+  SKILL_NAMES,
+} from '@/utils/learning-constants'
+import { InstructorVideosList, type InstructorVideoEntry } from '@/app/components/InstructorVideosList'
 
-type VideoEntry = {
-  id: string
-  title: string
-  youtube_url: string
-  skill_category: string
-  difficulty_level: number
-  tags: string[] | null
-  recommended_order: number
-  created_at: string
-}
-
-const DIFFICULTY_LABELS: Record<number, string> = {
-  1: 'Foundations',
-  2: 'Core Skills',
-  3: 'Practical Application',
-}
+type VideoEntry = InstructorVideoEntry
 
 /**
  * Instructor page with upload form and "My Videos" list.
@@ -167,12 +158,9 @@ export default function InstructorPage() {
                 className="w-full px-3 py-2.5 border rounded-xl dark:bg-slate-950 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               >
                 <option value="">Select a skill...</option>
-                <option value="Plumbing">Plumbing</option>
-                <option value="Solar Installation">Solar Installation</option>
-                <option value="Electrical Wiring">Electrical Wiring</option>
-                <option value="Construction">Construction</option>
-                <option value="Automotive Repair">Automotive Repair</option>
-                <option value="Tailoring">Tailoring</option>
+                {SKILL_NAMES.map((skill) => (
+                  <option key={skill} value={skill}>{skill}</option>
+                ))}
               </select>
             </div>
 
@@ -184,9 +172,9 @@ export default function InstructorPage() {
                 name="difficulty_level"
                 className="w-full px-3 py-2.5 border rounded-xl dark:bg-slate-950 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               >
-                <option value="1">1 - Foundations</option>
-                <option value="2">2 - Core Skills</option>
-                <option value="3">3 - Practical Application</option>
+                {DIFFICULTY_LEVELS.map((level) => (
+                  <option key={level} value={level}>{level} - {getDifficultyLabel(level)}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -228,63 +216,12 @@ export default function InstructorPage() {
         </form>
       </div>
 
-      {/* My Videos */}
-      <section className="animate-fade-in-up stagger-2">
-        <div className="flex items-center gap-2 mb-4">
-          <Video className="w-5 h-5 text-slate-400" />
-          <h2 className="text-xl font-bold">My Videos</h2>
-          <span className="ml-2 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full">
-            {videos.length}
-          </span>
-        </div>
-
-        {videosLoading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="skeleton h-20 rounded-2xl" />
-            ))}
-          </div>
-        ) : videos.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl">
-            <Video className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-            <p className="text-slate-500 dark:text-slate-400 font-medium">No videos uploaded yet</p>
-            <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
-              Use the form above to publish your first video.
-            </p>
-          </div>
-        ) : (
-          <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
-            {videos.map((video) => (
-              <div key={video.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-500 flex-shrink-0">
-                  <Video className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold truncate">{video.title}</p>
-                  <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-                    <span>{video.skill_category}</span>
-                    <span>•</span>
-                    <span>{DIFFICULTY_LABELS[video.difficulty_level] ?? `Level ${video.difficulty_level}`}</span>
-                    {video.tags && video.tags.length > 0 && (
-                      <>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                          <Tag className="w-3 h-3" />
-                          {video.tags.slice(0, 3).join(', ')}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className="text-xs text-slate-400 flex items-center gap-1 flex-shrink-0">
-                  <Clock className="w-3 h-3" />
-                  {new Date(video.created_at).toLocaleDateString()}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <InstructorVideosList
+        videos={videos}
+        loading={videosLoading}
+        emptyHint="Use the form above to publish your first video."
+        iconTone="blue"
+      />
     </div>
   )
 }

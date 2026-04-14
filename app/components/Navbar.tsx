@@ -8,7 +8,6 @@ import {
   Menu,
   X,
   LayoutDashboard,
-  BookOpen,
   Upload,
   ShieldCheck,
   Home,

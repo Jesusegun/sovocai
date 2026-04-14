@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
+import {
+  STAGE_BY_DIFFICULTY,
+  STAGE_ORDER,
+  type StageLabel,
+} from '@/utils/learning-constants'
 
 type VideoRow = {
   id: string
@@ -46,24 +51,20 @@ export async function GET(req: Request) {
   }))
 
   // 2. Group into stages
-  const stages = {
-    '1. Foundations': [] as VideoRow[],
-    '2. Core Skills': [] as VideoRow[],
-    '3. Practical Application': [] as VideoRow[]
+  const stages: Record<StageLabel, VideoRow[]> = {
+    [STAGE_BY_DIFFICULTY[1]]: [],
+    [STAGE_BY_DIFFICULTY[2]]: [],
+    [STAGE_BY_DIFFICULTY[3]]: [],
   }
 
   normalizedVideos.forEach((video) => {
-    if (video.difficulty_level === 1) {
-      stages['1. Foundations'].push(video)
-    } else if (video.difficulty_level === 2) {
-      stages['2. Core Skills'].push(video)
-    } else if (video.difficulty_level === 3) {
-      stages['3. Practical Application'].push(video)
+    if (video.difficulty_level === 1 || video.difficulty_level === 2 || video.difficulty_level === 3) {
+      stages[STAGE_BY_DIFFICULTY[video.difficulty_level]].push(video)
     }
   })
 
   // Foundations sort rule: safety/intro first, then recommended_order ASC, stable by id.
-  stages['1. Foundations'].sort((a, b) => {
+  stages[STAGE_BY_DIFFICULTY[1]].sort((a, b) => {
     const aPriority = hasFoundationPriority(a.tags) ? 1 : 0
     const bPriority = hasFoundationPriority(b.tags) ? 1 : 0
 
@@ -77,11 +78,7 @@ export async function GET(req: Request) {
   })
 
   return NextResponse.json({
-    stages: [
-      { stage: '1. Foundations', videos: stages['1. Foundations'] },
-      { stage: '2. Core Skills', videos: stages['2. Core Skills'] },
-      { stage: '3. Practical Application', videos: stages['3. Practical Application'] }
-    ],
+    stages: STAGE_ORDER.map((stage) => ({ stage, videos: stages[stage] })),
     totalVideos: normalizedVideos.length
   })
 }

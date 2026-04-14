@@ -14,7 +14,7 @@ type RecentVideo = {
   skill_category: string
   difficulty_level: number
   created_at: string
-  instructor: { full_name: string | null } | null
+  instructor: { full_name: string | null } | { full_name: string | null }[] | null
 }
 
 /**
@@ -58,6 +58,15 @@ export function AdminDashboard() {
 
     return () => controller.abort()
   }, [])
+
+  /**
+   * Normalize instructor shape — Supabase may return an object or array.
+   */
+  const getInstructorName = (instructor: RecentVideo['instructor']): string | null => {
+    if (!instructor) return null
+    if (Array.isArray(instructor)) return instructor[0]?.full_name ?? null
+    return instructor.full_name ?? null
+  }
 
   if (error) {
     return (
@@ -122,9 +131,7 @@ export function AdminDashboard() {
             ) : (
               <div className="bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800 shadow-sm overflow-hidden">
                 {recentVideos.map((video) => {
-                  const instructorName = Array.isArray(video.instructor)
-                    ? ((video.instructor as Array<{ full_name: string | null }>)[0]?.full_name ?? null)
-                    : video.instructor?.full_name ?? null
+                  const instructorName = getInstructorName(video.instructor)
                   return (
                     <div key={video.id} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                       <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 flex-shrink-0">
