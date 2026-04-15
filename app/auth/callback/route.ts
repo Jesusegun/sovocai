@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { EmailOtpType } from '@supabase/supabase-js'
 import { createClient } from '@/utils/supabase/server'
-
-function getSafeNextPath(input: string): string {
-  if (!input || !input.startsWith('/')) return '/'
-  if (input.startsWith('//')) return '/'
-  if (input.includes('\\')) return '/'
-  return input
-}
+import { getSafeNextPath } from '@/utils/safe-redirect'
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url)

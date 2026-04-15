@@ -2,13 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
-
-function getSafeNextPath(input: string): string {
-  if (!input || !input.startsWith('/')) return '/'
-  if (input.startsWith('//')) return '/'
-  if (input.includes('\\')) return '/'
-  return input
-}
+import { getSafeNextPath } from '@/utils/safe-redirect'
 
 export async function signup(formData: FormData) {
   const supabase = await createClient()

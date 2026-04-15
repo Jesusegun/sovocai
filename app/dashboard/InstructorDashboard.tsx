@@ -26,7 +26,7 @@ export function InstructorDashboard({ fullName }: InstructorDashboardProps) {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch('/api/videos', { signal: controller.signal })
+    fetch('/api/videos?mine=true', { signal: controller.signal })
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) setVideos(data)

@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Home,
 } from 'lucide-react'
+import { signOut } from '@/app/auth/signout/action'
 
 type NavbarProps = {
   isAuthenticated: boolean
@@ -96,7 +97,7 @@ export function Navbar({ isAuthenticated, role, fullName }: NavbarProps) {
               >
                 {initials}
               </div>
-              <form action="/auth/signout" method="post">
+              <form action={signOut}>
                 <button
                   type="submit"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
@@ -159,7 +160,7 @@ export function Navbar({ isAuthenticated, role, fullName }: NavbarProps) {
             })}
 
             {isAuthenticated ? (
-              <form action="/auth/signout" method="post" className="pt-2 border-t border-slate-200 dark:border-slate-800 mt-2">
+              <form action={signOut} className="pt-2 border-t border-slate-200 dark:border-slate-800 mt-2">
                 <button
                   type="submit"
                   className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"

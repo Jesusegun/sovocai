@@ -27,6 +27,15 @@ function hasFoundationPriority(tags: string[] | null): boolean {
   return normalized.includes('safety') || normalized.includes('intro')
 }
 
+/**
+ * GET /api/learning-path — Generate a structured learning path for a skill.
+ * Requires authentication (VULN-3 fix).
+ *
+ * Query params:
+ *   ?skill=<name>  — The skill category to generate a path for (required)
+ *
+ * @returns Stages with grouped, priority-sorted videos and a total count.
+ */
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const skill = searchParams.get('skill')
@@ -34,6 +43,9 @@ export async function GET(req: Request) {
   if (!skill) return NextResponse.json({ error: 'Skill is required' }, { status: 400 })
 
   const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // 1. Fetch ordered videos
   const { data: videos, error } = await supabase

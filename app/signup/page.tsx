@@ -1,13 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, GraduationCap, ShieldCheck, UserRound, Eye, EyeOff } from 'lucide-react'
 import { signup } from './actions'
 
-export default function SignupPage() {
+export default function SignupPageWrapper() {
+  return (
+    <Suspense>
+      <SignupPage />
+    </Suspense>
+  )
+}
+
+function SignupPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)

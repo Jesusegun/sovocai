@@ -1,22 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   BookOpen,
-  Car,
   CheckCircle2,
   Clock,
-  HardHat,
   Play,
-  Scissors,
   Sparkles,
   TrendingUp,
-  Wrench,
-  Sun,
-  Zap,
 } from 'lucide-react'
 import { SKILL_NAMES, type SkillName } from '@/utils/learning-constants'
+import { SKILL_META } from '@/utils/skill-config'
 
 type VideoData = {
   id: string
@@ -43,15 +39,6 @@ type LearnerDashboardProps = {
   fullName: string
 }
 
-const SKILL_CONFIG: Record<SkillName, { icon: React.ReactNode; gradient: string }> = {
-  Plumbing: { icon: <Wrench className="w-5 h-5" />, gradient: 'from-blue-500 to-cyan-400' },
-  'Solar Installation': { icon: <Sun className="w-5 h-5" />, gradient: 'from-amber-500 to-orange-400' },
-  'Electrical Wiring': { icon: <Zap className="w-5 h-5" />, gradient: 'from-indigo-500 to-purple-400' },
-  Construction: { icon: <HardHat className="w-5 h-5" />, gradient: 'from-emerald-500 to-teal-400' },
-  'Automotive Repair': { icon: <Car className="w-5 h-5" />, gradient: 'from-red-500 to-rose-400' },
-  Tailoring: { icon: <Scissors className="w-5 h-5" />, gradient: 'from-pink-500 to-fuchsia-400' },
-}
-
 /**
  * Learner Dashboard.
  * Shows: greeting, Continue Learning (most recent video by last_watched_at),
@@ -59,8 +46,6 @@ const SKILL_CONFIG: Record<SkillName, { icon: React.ReactNode; gradient: string 
  *
  * @param fullName - User's display name
  */
-import { useRouter } from 'next/navigation'
-
 export function LearnerDashboard({ fullName }: LearnerDashboardProps) {
   const [progress, setProgress] = useState<ProgressEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -242,12 +227,12 @@ export function LearnerDashboard({ fullName }: LearnerDashboardProps) {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {recommendedSkills.map((skill) => {
-                  const config = SKILL_CONFIG[skill] ?? { icon: <BookOpen className="w-5 h-5" />, gradient: 'from-slate-500 to-slate-400' }
+                  const config = SKILL_META[skill] ?? { Icon: BookOpen, gradient: 'from-slate-500 to-slate-400' }
                   return (
                     <div key={skill} className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between group h-full">
                       <div className="flex items-center gap-4 mb-4">
                         <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center text-white flex-shrink-0`}>
-                          {config.icon}
+                          <config.Icon className="w-5 h-5" />
                         </div>
                         <div>
                           <p className="font-semibold text-slate-900 dark:text-white">{skill}</p>

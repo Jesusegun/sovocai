@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import type { Session } from '@supabase/supabase-js';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from 'next/link';
@@ -13,31 +12,30 @@ export const metadata: Metadata = {
   description: "Master skilled trades with structured, expert-curated learning paths. Plumbing, Solar Installation, Electrical Wiring and more.",
 };
 
-export const dynamic = 'force-dynamic';
-
 /**
  * Root layout with sticky header, role-aware navigation, and footer.
- * Fetches session + profile server-side and passes to client Navbar.
+ * Fetches user + profile server-side via getUser() (JWT-verified) and
+ * passes props to the client Navbar.
  */
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let session: Session | null = null;
+  let isAuthenticated = false;
   let role = 'user';
   let fullName = '';
 
   try {
     const supabase = await createClient();
-    const { data: sessionData } = await supabase.auth.getSession();
-    session = sessionData.session;
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (session?.user) {
+    if (user) {
+      isAuthenticated = true;
       const { data } = await supabase
         .from('profiles')
         .select('role, full_name')
-        .eq('id', session.user.id)
+        .eq('id', user.id)
         .single();
       if (data) {
         role = data.role;
@@ -52,7 +50,7 @@ export default async function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col`}>
         <Navbar
-          isAuthenticated={!!session}
+          isAuthenticated={isAuthenticated}
           role={role}
           fullName={fullName}
         />
